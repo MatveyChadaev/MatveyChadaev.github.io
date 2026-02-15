@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Амфифильные дендримеры | ООО «Дендримеры»</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;0,800;1,400&family=Inter:wght@400;700&display=swap"
+          rel="stylesheet">
+    <style>
+        body {
+            background-color: #020202;
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: none;
+            overflow-x: hidden;
+        }
+
+        * { cursor: none !important; }
+
+        .selection-red::selection {
+            background: #dc2626;
+            color: white;
+        }
+
+        #interactive-grid {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.15;
+            background-image: 
+                linear-gradient(to right, #222 1px, transparent 1px), 
+                linear-gradient(to bottom, #222 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        #grid-glow {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            background: radial-gradient(circle at 50% 50%, rgba(220, 38, 38, 0.1) 0%, transparent 40%);
+        }
+
+        #cursor-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #dc2626;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+        }
+
+        #cursor-outline {
+            width: 35px;
+            height: 35px;
+            border: 1px solid rgba(220, 38, 38, 0.5);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        .reveal-text span {
+            display: inline-block;
+            transform: translateY(100%);
+        }
+
+        .skew-box { transform: skewX(-12deg); }
+
+        sub { font-size: 0.6em; vertical-align: sub; }
+
+        .blur-bg {
+            backdrop-filter: blur(10px);
+            background: rgba(2, 2, 2, 0.8);
+        }
+
+        #bg-atom-container {
+            position: fixed;
+            top: 50%;
+            transition: all 0.5s ease;
+        }
+
+        @media (orientation: portrait) {
+            #bg-atom-container {
+                left: 0;
+                right: auto;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        @media (orientation: landscape) {
+            #bg-atom-container {
+                right: 0;
+                left: auto;
+                transform: translate(50%, -50%);
+            }
+        }
+    </style>
+</head>
+<body class="selection-red">
+
+<div id="cursor-dot"></div>
+<div id="cursor-outline"></div>
+
+<div id="interactive-grid"></div>
+<div id="grid-glow"></div>
+
+<div id="bg-atom-container" class="fixed right-[-10%] top-[10%] opacity-[0.07] pointer-events-none z-0">
+    <img src="atom-red.png" id="rotating-atom" width="900" height="900">
+</div>
+
+<nav class="fixed top-0 left-0 w-full z-[100] p-6 flex justify-between items-center blur-bg border-b border-white/5">
+    <div class="flex items-center gap-4 group">
+        <div class="w-10 h-10 bg-red-600 flex items-center justify-center skew-box">
+            <img class="p-1" src="dna.png">
+        </div>
+        <div class="leading-none">
+            <div class="text-xl font-black italic tracking-tighter uppercase">ilshat_Lab</div>
+            <div class="text-[7px] tracking-[0.3em] text-red-500 font-bold uppercase">проект «Дендримеры»</div>
+        </div>
+    </div>
+
+    <div class="hidden lg:flex gap-8 text-[11px] font-black uppercase tracking-widest text-white/30">
+        <a href="#design" class="text-[#949494] hover:text-white transition-colors">Дизайн молекул</a>
+        <a href="#properties" class="text-[#949494] hover:text-white transition-colors">Свойства</a>
+        <a href="#products" class="text-[#949494] hover:text-white transition-colors">Продукция</a>
+        <a href="#support" class="text-[#949494] hover:text-white transition-colors">Поддержка</a>
+        <a href="#contacts" class="text-[#949494] hover:text-white transition-colors">Контакты</a>
+    </div>
+</nav>
+
+<section class="relative min-h-screen flex items-center px-6 md:px-24">
+    <div class="z-10 w-full">
+        <div class="flex items-center gap-4 mb-8">
+            <div class="h-[1px] bg-red-600 w-10"></div>
+            <span class="text-[10px] font-black uppercase tracking-[0.4em] text-red-600">Chemistry Project</span>
+        </div>
+
+        <h1 class="reveal-text text-[8vw] md:text-[6.5vw] font-black uppercase italic leading-[0.85] tracking-tighter mb-12 flex flex-col">
+            <span>Амфифильные</span>
+            <span>Дендримеры</span>
+        </h1>
+
+        <p class="text-sm md:text-lg text-white/40 max-w-xl font-sans leading-relaxed mb-12 opacity-0 trigger-hero-fade">
+            Синтезированы на основе галловой кислоты и функционализированы имидозолиевыми группами. Разработаны с учетом
+            требований к биосовместимым, настраиваемым и многофункциональным наноматериалам.
+        </p>
+
+        <div class="flex flex-wrap gap-6 opacity-0 trigger-hero-fade">
+            <a href="#products"
+               class="magnetic-btn bg-white text-black hover:bg-red-600 hover:text-white italic px-10 py-4 text-[10px] font-black uppercase tracking-widest transition-colors duration-300">
+                Каталог продукции
+            </a>
+        </div>
+    </div>
+</section>
+
+<section id="design" class="py-40 px-6 md:px-24 border-y border-white/5 bg-white/[0.01]">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+        <div>
+            <span class="text-red-600 font-bold text-[10px] uppercase tracking-widest mb-4 block">Molecular Design</span>
+            <h2 class="reveal-text text-4xl md:text-6xl font-black italic uppercase mb-12 flex flex-wrap">
+                <span>Дизайн</span>&nbsp;<span>молекул</span>
+            </h2>
+            <div class="space-y-6 text-white/50 font-sans opacity-0 trigger-fade">
+                <p class="border-l-2 border-red-600 pl-6">
+                    <strong class="text-white">Галловая кислота</strong> - природный полифенольный фрагмент, известный
+                    своей биологической активностью и хорошей биосовместимостью.
+                </p>
+                <p>
+                    В основе структуры лежит <strong class="text-white">галловая кислота</strong>. Дендримерная
+                    архитектура обеспечивает строго контролируемый размер и высокую плотность
+                    функциональных групп.
+                </p>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="p-8 border border-white/5 bg-white/[0.02] text-center">
+                <div class="text-4xl font-black text-red-600 italic mb-2">G1-G3</div>
+                <div class="text-[8px] uppercase font-bold text-white/20 tracking-widest">Генерации</div>
+            </div>
+            <div class="p-8 border border-white/5 bg-white/[0.02] text-center">
+                <div class="text-4xl font-black text-white italic mb-2">100%</div>
+                <div class="text-[8px] uppercase font-bold text-white/20 tracking-widest">Воспроизводимость</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="properties" class="py-40 px-6 md:px-24">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-20 text-center">Свойства</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <div class="hud-card p-10 border border-white/5 bg-[#050505] relative group">
+                <div class="absolute top-0 left-0 w-full h-1 bg-red-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                <div class="text-red-600 mb-6 italic font-black text-2xl">01</div>
+                <h3 class="text-xl font-bold uppercase mb-4">Амфифильный характер</h3>
+            </div>
+            <div class="hud-card p-10 border border-white/5 bg-[#050505] relative group">
+                <div class="absolute top-0 left-0 w-full h-1 bg-red-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                <div class="text-red-600 mb-6 italic font-black text-2xl">02</div>
+                <h3 class="text-xl font-bold uppercase mb-4">Положительный заряд</h3>
+            </div>
+            <div class="hud-card p-10 border border-white/5 bg-[#050505] relative group">
+                <div class="absolute top-0 left-0 w-full h-1 bg-red-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                <div class="text-red-600 mb-6 italic font-black text-2xl">03</div>
+                <h3 class="text-xl font-bold uppercase mb-4">Способность к ионным и водородным взаимодействиям</h3>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="py-40 px-6 md:px-24 grid grid-cols-1 md:grid-cols-2 gap-10">
+        <div class="hud-card p-8 border border-white/10 bg-[#080808] hover:border-red-600 transition-colors">
+            <h3 class="text-4xl md:text-4xl font-black italic uppercase mb-20 text-center">Области применения</h3>
+            <ul class="text-[15px] space-y-3 border-l-2 border-red-600 pl-6">
+                <li>• Доставки лекарственных средств и генов</li>
+                <li>• Солюбилизации плохо растворимых соединений</li>
+                <li>• Антимикробных и противовирусных композиций</li>
+                <li>• Диагностических и тераностических систем</li>
+                <li>• Создания функциональных покрытий для медицинских устройств</li>
+            </ul>
+        </div>
+        <div class="hud-card p-8 border border-white/10 bg-[#080808] hover:border-red-600 transition-colors">
+            <h3 class="text-4xl md:text-4xl font-black italic uppercase mb-20 text-center">Преимущества</h3>
+            <ul class="text-[15px] space-y-3 border-l-2 border-red-600 pl-6">
+                <li>• Четко заданная архитектура и воспроизводимость свойств</li>
+                <li>• Высокая степень функционализации поверхности</li>
+                <li>• Возможность тонкой химической модификации</li>
+                <li>• Потенциально пониженная токсичность за счет природного ядра</li>
+                <li>• Совместимость с водными и физиологическими средами</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section id="products" class="py-40 px-6 md:px-24 bg-white/[0.01]">
+    <div class="max-w-7xl mx-auto">
+        <h2 class="text-4xl md:text-6xl font-black italic uppercase mb-20">Линейка продукции</h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="hud-card p-8 border border-white/10 bg-[#080808] hover:border-red-600 transition-colors">
+                <div class="flex justify-between items-start mb-12">
+                    <span class="text-xs font-black text-red-600 uppercase">Generation_01</span>
+                    <span class="text-[8px] text-white/20">Ref: G1-IMD-GAL</span>
+                </div>
+                <h4 class="text-2xl font-black italic mb-6">G1-Imd-gal</h4>
+                <div class="space-y-3 font-mono text-[15px] text-white/40">
+                    <div class="flex justify-between border-b border-white/5 pb-2">
+                        <span class="text-[#949494]">Формула:</span>
+                        <span class="text-white">C<sub>67</sub>H<sub>115</sub>Br<sub>2</sub>N<sub>7</sub>O<sub>7</sub></span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/5 pb-2">
+                        <span class="text-[#949494]">Масса:</span>
+                        <span class="text-white">1290.51 г/моль</span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/5 pb-2">
+                        <span class="text-[#949494]">Чистота:</span>
+                        <span class="text-red-500 font-bold">99.997%</span>
+                    </div>
+                </div>
+                <div class="flex justify-between border-b border-white/5 pb-2">
+                    <p class="mt-8 text-[#949494] text-[12px] leading-relaxed text-white/30 italic">Растворим в спирте, ДМСО, плохо – в
+                        воде.</p>
+                </div>
+                <img class="" src="G1 (1).png">
+            </div>
+
+            <div class="hud-card p-8 border border-white/10 bg-[#080808] hover:border-red-600 transition-colors">
+                <div class="flex justify-between items-start mb-12">
+                    <span class="text-xs font-black text-red-600 uppercase">Generation_02</span>
+                    <span class="text-[8px] text-white/20">Ref: G2-IMD-GAL</span>
+                </div>
+                <h4 class="text-2xl font-black italic mb-6">G2-Imd-gal</h4>
+                <div class="space-y-3 font-mono text-[15px] text-white/40">
+                    <div class="flex justify-between border-b border-white/5 pb-2">
+                        <span class="text-[#949494]">Формула:</span>
+                        <span class="text-white">C<sub>95</sub>H<sub>151</sub>Br<sub>4</sub>N<sub>17</sub>O<sub>15</sub></span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/5 pb-2">
+                        <span class="text-[#949494]">Масса:</span>
+                        <span class="text-white">2090.97 г/моль</span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/5 pb-2">
+                        <span class="text-[#949494]">Чистота:</span>
+                        <span class="text-red-500 font-bold">99.997%</span>
+                    </div>
+                </div>
+                <div class="flex justify-between border-b border-white/5 pb-2">
+                    <p class="mt-8 text-[#949494] text-[12px] leading-relaxed text-white/30 italic">Растворим в спирте, ДМСО, плохо – в
+                        воде.</p>
+                </div>
+                <img class="" src="G2 (1).png">
+            </div>
+
+            <div class="hud-card p-8 border border-white/10 bg-[#080808] hover:border-red-600 transition-colors">
+                <div class="flex justify-between items-start mb-12">
+                    <span class="text-xs font-black text-red-600 uppercase">Generation_03</span>
+                    <span class="text-[8px] text-white/20">Ref: G3-IMD-GAL</span>
+                </div>
+                <h4 class="text-2xl font-black italic mb-6">G3-Imd-gal</h4>
+                <div class="space-y-3 font-mono text-[15px] text-white/40">
+                    <div class="flex justify-between border-b border-white/5 pb-2">
+                        <span class="text-[#949494]">Формула:</span>
+                        <span class="text-white">C<sub>151</sub>H<sub>223</sub>Br<sub>8</sub>N<sub>37</sub>O<sub>31</sub></span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/5 pb-2">
+                        <span class="text-[#949494]">Масса:</span>
+                        <span class="text-white">3691.91 г/моль</span>
+                    </div>
+                    <div class="flex justify-between border-b border-white/5 pb-2">
+                        <span class="text-[#949494]">Чистота:</span>
+                        <span class="text-red-500 font-bold">99.997%</span>
+                    </div>
+                </div>
+                <div class="flex justify-between border-b border-white/5 pb-2">
+                    <p class="mt-8 text-[12px] leading-relaxed text-red-500 italic font-bold">Хорошо растворим в
+                        воде.</p>
+                </div>
+                <img class="" src="G3 (1).png">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="support" class="py-24 bg-white text-black px-6 md:px-24">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+        <div class="flex justify-center lg:justify-start">
+            <div class="flex items-center gap-6">
+                <div class="w-40 h-40 bg-blue-900 flex items-center justify-center text-white font-bold text-4xl"><img
+                        src="https://static.tildacdn.com/tild6539-6139-4465-b735-626465333331/FASIE_RU_rgb_-_svg.png">
+                </div>
+                <div class="text-xl font-black uppercase leading-none">
+                    Фонд<br>Содействия<br>Инновациям
+                </div>
+            </div>
+        </div>
+        <div class="border-l-4 border-red-600 pl-10">
+            <p class="text-[12px] md:text-sm font-black uppercase leading-relaxed tracking-tight">
+                Проект реализован при поддержке Фонда содействия инновациям в рамках программы «Студенческий стартап»
+                мероприятия «Платформа университетского технологического предпринимательства» федерального проекта
+                «Технологии»
+            </p>
+        </div>
+    </div>
+</section>
+
+<footer id="contacts" class="px-6 py-20 bg-[#020202] relative">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-20 z-10 relative">
+        <div>
+            <h3 class="text-3xl font-black italic uppercase mb-8">Контакты</h3>
+            <div class="space-y-4 font-mono text-sm text-white/40">
+                <p class="hover:text-red-600 transition-colors">ilshat.bogdanov.2010@mail.ru</p>
+            </div>
+        </div>
+        <div class="text-right text-[8px] uppercase tracking-[0.5em] text-white/10">
+            Ilshat_Lab // 2026
+        </div>
+    </div>
+</footer>
+
+<script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    const cursorDot = document.getElementById('cursor-dot');
+    const cursorOutline = document.getElementById('cursor-outline');
+
+    window.addEventListener('mousemove', (e) => {
+        gsap.to(cursorDot, { x: e.clientX, y: e.clientY, duration: 0.1 });
+        gsap.to(cursorOutline, { x: e.clientX - 11, y: e.clientY - 11, duration: 0.3 });
+
+        const gridGlow = document.getElementById('grid-glow');
+        gridGlow.style.background = `radial-gradient(circle at ${e.clientX}px ${e.clientY}px, rgba(220, 38, 38, 0.12) 0%, transparent 40%)`;
+    });
+
+    gsap.to("#rotating-atom", {
+        rotate: 360,
+        scrollTrigger: {
+            trigger: "body",
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 0.5
+        }
+    });
+
+    document.querySelectorAll('.magnetic-btn').forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+            const rect = btn.getBoundingClientRect();
+            const x = (e.clientX - rect.left - rect.width / 2) * 0.35;
+            const y = (e.clientY - rect.top - rect.height / 2) * 0.35;
+            gsap.to(btn, { x, y, duration: 0.3 });
+        });
+        btn.addEventListener('mouseleave', () => {
+            gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1, 0.3)" });
+        });
+    });
+
+    gsap.utils.toArray('.reveal-text').forEach(text => {
+        gsap.to(text.querySelectorAll('span'), {
+            y: 0,
+            duration: 1,
+            stagger: 0.1,
+            ease: "power4.out",
+            scrollTrigger: { trigger: text, start: "top 90%" }
+        });
+    });
+
+    gsap.to(".trigger-hero-fade", {
+        opacity: 1,
+        y: 0,
+        duration: 1.5,
+        delay: 0.5,
+        stagger: 0.3
+    });
+
+    gsap.utils.toArray('.trigger-fade').forEach(elem => {
+        gsap.to(elem, {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            scrollTrigger: { trigger: elem, start: "top 85%" }
+        });
+    });
+
+    gsap.utils.toArray('.hud-card').forEach(card => {
+        gsap.from(card, {
+            opacity: 0,
+            y: 30,
+            duration: 0.8,
+            scrollTrigger: { trigger: card, start: "top 90%" }
+        });
+    });
+</script>
+</body>
+</html>
+
